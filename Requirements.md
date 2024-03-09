@@ -12,12 +12,12 @@ Any SQL Database is accepted
 
 ### APIs
 Create server in any of framework using Node.js and add following APIs
-- [ ] [ ] Create Course
-- [ ] [ ] Update Course Details (name, max_seats, start_date, etc)
-- [ ] [ ] Course Registration (params: course_id, student_token)
-- [ ] [ ] Lead update API (Instructor can change the status of Lead(Accepted, Rejected, Waitlist))
-- [ ] [ ] Lead search API (Instructor can search lead by name / email)
-- [ ] [ ] Add comment on Lead
+- [x] [ ] Create Course
+- [x] [ ] Update Course Details (name, max_seats, start_date, etc)
+- [x] [ ] Course Registration (params: course_id, student_token)
+- [x] [ ] Lead update API (Instructor can change the status of Lead(Accepted, Rejected, Waitlist))
+- [x] [ ] Lead search API (Instructor can search lead by name / email)
+- [x] [ ] Add comment on Lead
 
 ## How to Submit
 - (Good to have) Dockerize your server and Database
