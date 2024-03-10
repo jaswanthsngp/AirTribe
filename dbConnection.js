@@ -17,9 +17,6 @@ const connectDB = async () => {
         console.log((await client.query("SELECT 'Connection Eshtablished'")).rows);
     } catch(error) {
         console.error(error);
-    } finally {
-        if(client!=null)
-            await client.end();
     }
 }
 
@@ -40,8 +37,8 @@ const signUp = async (name, pwd, email, linkedin, role) => {
 
 const login = async (email, pwd) => {
     let x = await client.query(`select validate_login('${email}', '${pwd}')`);
-    console.log(x);
-    console.log(x.rows[0]['validate_login']);
+    // console.log(x);
+    // console.log(x.rows[0]['validate_login']);
     return x.rows[0]['validate_login'];
 }
 
@@ -52,7 +49,7 @@ const createCourse = async (name, start, end, duration, capacity, instructor) =>
         text: "insert into courses(course_name, start_date, end_date, no_of_hours, max_seats, instructor) values ($1, date($2), date($3), $4, $5, $6) returning id",
         values: [name, start, end, duration, capacity, instructor]
     });
-    console.log(x.rows[0]['id']);
+    // console.log(x.rows[0]['id']);
     return x.rows[0]['id'];
 }
 
@@ -65,11 +62,14 @@ const updateCourse = async (id, field, value) => {
     } else if(field === 'name') {
         x = await client.query(`update courses set course_name = '${value}' where id = ${id}`);
     } else if(field === 'duration') {
-        x = await client.query(`update courses set no_of_hours = ${value} where id = ${id}`);
+        x = await client.query(`update courses set no_of_hours = ${parseInt(value)} where id = ${id}`);
     } else if(field === 'capacity') {
-        x = await client.query(`update courses set max_seats = ${value} where id = ${id}`);
+        x = await client.query(`update courses set max_seats = ${parseInt(value)} where id = ${id}`);
     }
-    console.log(x.rowCount);
+    // console.log(x.rowCount);
+    if(x.rowCount>0)
+        return true;
+    return false;
 }
 
 // updateCourse(7, 'end', '2024-03-12');
@@ -80,7 +80,7 @@ const updateCourse = async (id, field, value) => {
 
 const registerForACourse = async (student_id, course_id) => {
     let x = await client.query(`insert into leads(student_id, course_id) values(${student_id}, ${course_id}) returning id`);
-    console.log(x.rows[0]['id']);
+    // console.log(x.rows[0]['id']);
     return x.rows[0]['id'];
 }
 
@@ -88,7 +88,10 @@ const registerForACourse = async (student_id, course_id) => {
 
 const updateLeadStatus = async (id, status) => {
     let x = await client.query(`update leads set status = '${status}' where id = ${id}`);
-    console.log(x.rowCount);
+    // console.log(x.rowCount);
+    if(x.rowCount>0)
+        return true;
+    return false;
 }
 
 // updateLeadStatus(2, 'accepted');
@@ -96,14 +99,17 @@ const updateLeadStatus = async (id, status) => {
 
 const addComment = async (id, comment) => {
     let x = await client.query(`update leads set comment = '${comment}' where id = ${id}`);
-    console.log(x.rowCount);
+    // console.log(x.rowCount);
+    if(x.rowCount>0)
+        return true;
+    return false;
 }
 
 // addComment(3, 'duplicate entry');
 
 const searchByName = async (name) => {
     let x = await client.query(`select * from leads where student_id in (select id from users where name like '%${name}%')`);
-    console.log(x.rows);
+    // console.log(x.rows);
     return x.rows;
 }
 
@@ -111,9 +117,10 @@ const searchByName = async (name) => {
 
 const searchByEmail = async (mail) => {
     let x = await client.query(`select * from leads where student_id in (select id from users where email like '%${mail}%')`);
-    console.log(x.rows);
+    // console.log(x.rows);
     return x.rows;
 }
 
 // searchByEmail('b');
 
+module.exports = {signUp, login, createCourse, updateCourse, registerForACourse, updateLeadStatus, addComment, searchByName, searchByEmail}
